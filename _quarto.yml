@@ -12,6 +12,9 @@ website:
     right:
       - text: Contact
         href: https://schmidtpaul.github.io/
+      - icon: github
+        href: https://github.com/SchmidtPaul/70BiomColl_AdvDataVisR
+        aria-label: GitHub
 
 format:
   html:

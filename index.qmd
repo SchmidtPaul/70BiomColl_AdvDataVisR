@@ -29,10 +29,6 @@ This is the supporting material for the tutorial **Advanced data visualization i
 > 
 > Format: Hybrid
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
-
-```
-
 # Part 0: Setup
 
 You will need to install the following packages
@@ -48,4 +44,8 @@ install.packages("virids")
 
 # Part 1: A single plot
 
+TODO
+
 # Part 2: Multiple plots
+
+TODO
