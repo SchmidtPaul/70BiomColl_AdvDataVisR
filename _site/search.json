@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Tutorial: Advanced data visualization in R",
+    "section": "",
+    "text": "This is the supporting material for the tutorial Advanced data visualization in R which takes place on the 28.02.2024 09:00-12:00. Here is the tutorial description as displayed on the website’s conference program:\n\nAdvanced data visualization in R: (Re)producing professional plots with ggplot2 and the tidyverse\nLecturer: Paul Schmidt (BioMath GmbH, Hamburg)\nLearning objectives:\n\nDeep dive into ggplot2: Understand the intricacies of ggplot2 for top-tier data visualization\nData manipulation with tidyverse: Utilize packages like dplyr, tidyr, and forcats to shape data optimally for creating graphs\nAestetic fine-tuning: Master the skills of axis formatting, theme detailing, and color selection\nReproducing Exercise: Recreate published plots to understand the application of ggplot2 techniques in real-world scenarios\nExporting excellence: Learn best practices for exporting plots in publication-ready formats\n\nTarget group:\n\nAnyone wanting to produce or present high-quality plots. Conveying complex data insights through refinde visualizations is a relevant part of statistical analysis\n\nPrerequisites:\n\nBasic understanding of R programming is required\nBasci knowledge of ggplot2 and the tidyverse is beneficial, but not required\nR-packages: tidyverse, cowplot, ggrepel, ggtext, viridis\n\nFormat: Hybrid\n\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  }
+]
