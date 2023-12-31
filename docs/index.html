@@ -148,7 +148,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#part-0-setup" id="toc-part-0-setup" class="nav-link active" data-scroll-target="#part-0-setup">Part 0: Setup</a></li>
-  <li><a href="#part-1-a-single-plot" id="toc-part-1-a-single-plot" class="nav-link" data-scroll-target="#part-1-a-single-plot">Part 1: A single plot</a></li>
+  <li><a href="#part-1-a-single-plot" id="toc-part-1-a-single-plot" class="nav-link" data-scroll-target="#part-1-a-single-plot">Part 1: A single plot</a>
+  <ul class="collapse">
+  <li><a href="#reproducing-a-theme" id="toc-reproducing-a-theme" class="nav-link" data-scroll-target="#reproducing-a-theme">Reproducing a theme</a></li>
+  <li><a href="#axis-formatting" id="toc-axis-formatting" class="nav-link" data-scroll-target="#axis-formatting">axis formatting</a></li>
+  <li><a href="#choosing-colors" id="toc-choosing-colors" class="nav-link" data-scroll-target="#choosing-colors">Choosing colors</a></li>
+  <li><a href="#alternative-dumbbell-plot" id="toc-alternative-dumbbell-plot" class="nav-link" data-scroll-target="#alternative-dumbbell-plot">Alternative: Dumbbell plot</a></li>
+  </ul></li>
   <li><a href="#part-2-multiple-plots" id="toc-part-2-multiple-plots" class="nav-link" data-scroll-target="#part-2-multiple-plots">Part 2: Multiple plots</a></li>
   </ul>
 </nav>
@@ -226,19 +232,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </blockquote>
 <section id="part-0-setup" class="level1">
 <h1>Part 0: Setup</h1>
-<p>You will need to install the following packages</p>
+<p>The decision on which plots to create in this workshop was inspired by <a href="https://albert-rapp.de/posts/ggplot2-tips/15_alternative_paired_bars/15_alternative_paired_bars.html">this blog post</a> by <a href="https://albert-rapp.de/">Albert Rapp</a> whose R and data visualization content is worth checking out!</p>
+<p>You will need to install and load the following packages</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"cowplot"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"gapminder"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggrepel"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggtext"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"virids"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"scales"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"viridis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cowplot)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gapminder)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggtext)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that we expect participants with different levels of experience in this tutorial. Furthermore, the tutorial duration is only 3 hours and thus quite short. As a consequence, this material often links to other resources with more detailed information instead of blowing up the content of this material. However, where possible, these links don’t simply lead to official online documentation etc. which may be hard to grasp for beginners, but instead to other workshop content created by this tutorial’s main lecturer.</p>
 </section>
 <section id="part-1-a-single-plot" class="level1">
 <h1>Part 1: A single plot</h1>
+<p>Lets us first create a single plot to compare the life expectancy between 1952 and 2007 for seven countries, respectively. The data is courtesy of <a href="https://www.gapminder.org/">the Gapminder foundation</a> and can easily be accessed via the <a href="https://jennybc.github.io/gapminder/">{gapminder}</a> package. We can then make use of <a href="https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#the-pipe-operator">the pipe operator <code>%&gt;%</code></a> to create a subset of the data via the <a href="https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#filter"><code>filter()</code> function</a>. Finally, in order for our ggplot to work as intended in the next step, we also need to format the year column as a factor instead of an integer value via <a href="https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#mutate"><code>mutate()</code></a>. Both functions are from the <a href="https://dplyr.tidyverse.org/">{dplyr}</a> package which we loaded as part of the <a href="https://www.tidyverse.org/">{tidyverse}</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> gapminder<span class="sc">::</span>gapminder <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">1952</span> <span class="sc">|</span> year <span class="sc">==</span> <span class="dv">2007</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(country <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Canada"</span>, <span class="st">"Germany"</span>, <span class="st">"Japan"</span>, <span class="st">"Netherlands"</span>, <span class="st">"Nigeria"</span>, <span class="st">"Vietnam"</span>, <span class="st">"Zimbabwe"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">as.factor</span>(year))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 6
+   country     continent year  lifeExp       pop gdpPercap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;fct&gt;   &lt;dbl&gt;     &lt;int&gt;     &lt;dbl&gt;
+ 1 Canada      Americas  1952     68.8  14785584    11367.
+ 2 Canada      Americas  2007     80.7  33390141    36319.
+ 3 Germany     Europe    1952     67.5  69145952     7144.
+ 4 Germany     Europe    2007     79.4  82400996    32170.
+ 5 Japan       Asia      1952     63.0  86459025     3217.
+ 6 Japan       Asia      2007     82.6 127467972    31656.
+ 7 Netherlands Europe    1952     72.1  10381988     8942.
+ 8 Netherlands Europe    2007     79.8  16570613    36798.
+ 9 Nigeria     Africa    1952     36.3  33119096     1077.
+10 Nigeria     Africa    2007     46.9 135031164     2014.
+11 Vietnam     Asia      1952     40.4  26246839      605.
+12 Vietnam     Asia      2007     74.2  85262356     2442.
+13 Zimbabwe    Africa    1952     48.5   3080907      407.
+14 Zimbabwe    Africa    2007     43.5  12311143      470.</code></pre>
+</div>
+</div>
+<p>One typical way you may find data like this visualized is via a grouped bar plot. The minimum amount of code to create such a plot via ggplot is this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dat) <span class="sc">+</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">y =</span> country, <span class="at">fill =</span> year) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="1650"></p>
+</div>
+</div>
+<p><a href="https://schmidtpaul.github.io/dsfair_quarto/ch/summaryarticles/ggplot2intro.html#lets-start">Read this</a> if you are not familiar with the general ggplot syntax. We need to add <code>position = position_dodge()</code> to <code>geom_col()</code>, since the default is to stack the multiple bars (for the different years) on top of each other.</p>
 <p>TODO</p>
+<ul>
+<li>get data ready</li>
+<li>create grouped bar plot</li>
+</ul>
+<section id="reproducing-a-theme" class="level2">
+<h2 class="anchored" data-anchor-id="reproducing-a-theme">Reproducing a theme</h2>
+<p>Using <code>theme()</code> allows us to format our plot in any way we want. Instead of picking things based on what feels good, let us here try to recreate the layout of a plot published in <a href="https://doi.org/10.1038/d41586-019-03305-w"><em>Nature</em></a> in ‘150 years of Nature: a data graphic charts our evolution’ by Richard Monastersky &amp; Richard Van Noorden (2019). <a href="https://media.nature.com/lw767/magazine-assets/d41586-019-03305-w/d41586-019-03305-w_17345518.png">URL to the plot</a>.</p>
+<p><img src="https://media.nature.com/lw767/magazine-assets/d41586-019-03305-w/d41586-019-03305-w_17345518.png" class="img-fluid"></p>
+</section>
+<section id="axis-formatting" class="level2">
+<h2 class="anchored" data-anchor-id="axis-formatting">axis formatting</h2>
+<p>TODO</p>
+<ul>
+<li>no space below 0 (<code>expand =</code>)</li>
+</ul>
+</section>
+<section id="choosing-colors" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-colors">Choosing colors</h2>
+<p>TODO</p>
+<ul>
+<li>copy colors from nature plot</li>
+<li>use viridis colors instead</li>
+</ul>
+</section>
+<section id="alternative-dumbbell-plot" class="level2">
+<h2 class="anchored" data-anchor-id="alternative-dumbbell-plot">Alternative: Dumbbell plot</h2>
+<p>TODO</p>
+<ul>
+<li>discuss advantage</li>
+<li>create</li>
+</ul>
+</section>
 </section>
 <section id="part-2-multiple-plots" class="level1">
 <h1>Part 2: Multiple plots</h1>

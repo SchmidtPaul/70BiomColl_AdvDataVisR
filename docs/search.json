@@ -4,6 +4,34 @@
     "href": "index.html",
     "title": "Tutorial: Advanced data visualization in R",
     "section": "",
-    "text": "This is the supporting material for the tutorial Advanced data visualization in R which takes place on the 28.02.2024 09:00-12:00. Here is the tutorial description as displayed on the website’s conference program:\n\nAdvanced data visualization in R: (Re)producing professional plots with ggplot2 and the tidyverse\nLecturer: Paul Schmidt (BioMath GmbH, Hamburg)\nLearning objectives:\n\nDeep dive into ggplot2: Understand the intricacies of ggplot2 for top-tier data visualization\nData manipulation with tidyverse: Utilize packages like dplyr, tidyr, and forcats to shape data optimally for creating graphs\nAestetic fine-tuning: Master the skills of axis formatting, theme detailing, and color selection\nReproducing Exercise: Recreate published plots to understand the application of ggplot2 techniques in real-world scenarios\nExporting excellence: Learn best practices for exporting plots in publication-ready formats\n\nTarget group:\n\nAnyone wanting to produce or present high-quality plots. Conveying complex data insights through refinde visualizations is a relevant part of statistical analysis\n\nPrerequisites:\n\nBasic understanding of R programming is required\nBasci knowledge of ggplot2 and the tidyverse is beneficial, but not required\nR-packages: tidyverse, cowplot, ggrepel, ggtext, viridis\n\nFormat: Hybrid\n\n\nPart 0: Setup\nYou will need to install the following packages\n\ninstall.packages(\"cowplot\")\ninstall.packages(\"gapminder\")\ninstall.packages(\"ggrepel\")\ninstall.packages(\"ggtext\")\ninstall.packages(\"tidyverse\")\ninstall.packages(\"virids\")\n\n\n\nPart 1: A single plot\nTODO\n\n\nPart 2: Multiple plots\nTODO"
+    "text": "This is the supporting material for the tutorial Advanced data visualization in R which takes place on the 28.02.2024 09:00-12:00. Here is the tutorial description as displayed on the website’s conference program:"
+  },
+  {
+    "objectID": "index.html#reproducing-a-theme",
+    "href": "index.html#reproducing-a-theme",
+    "title": "Tutorial: Advanced data visualization in R",
+    "section": "Reproducing a theme",
+    "text": "Reproducing a theme\nUsing theme() allows us to format our plot in any way we want. Instead of picking things based on what feels good, let us here try to recreate the layout of a plot published in Nature in ‘150 years of Nature: a data graphic charts our evolution’ by Richard Monastersky & Richard Van Noorden (2019). URL to the plot."
+  },
+  {
+    "objectID": "index.html#axis-formatting",
+    "href": "index.html#axis-formatting",
+    "title": "Tutorial: Advanced data visualization in R",
+    "section": "axis formatting",
+    "text": "axis formatting\nTODO\n\nno space below 0 (expand =)"
+  },
+  {
+    "objectID": "index.html#choosing-colors",
+    "href": "index.html#choosing-colors",
+    "title": "Tutorial: Advanced data visualization in R",
+    "section": "Choosing colors",
+    "text": "Choosing colors\nTODO\n\ncopy colors from nature plot\nuse viridis colors instead"
+  },
+  {
+    "objectID": "index.html#alternative-dumbbell-plot",
+    "href": "index.html#alternative-dumbbell-plot",
+    "title": "Tutorial: Advanced data visualization in R",
+    "section": "Alternative: Dumbbell plot",
+    "text": "Alternative: Dumbbell plot\nTODO\n\ndiscuss advantage\ncreate"
   }
 ]

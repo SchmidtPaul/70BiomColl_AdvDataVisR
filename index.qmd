@@ -31,20 +31,93 @@ This is the supporting material for the tutorial **Advanced data visualization i
 
 # Part 0: Setup
 
-You will need to install the following packages
+The decision on which plots to create in this workshop was inspired by [this blog post](https://albert-rapp.de/posts/ggplot2-tips/15_alternative_paired_bars/15_alternative_paired_bars.html) by [Albert Rapp](https://albert-rapp.de/) whose R and data visualization content is worth checking out!
+
+You will need to install and load the following packages
 
 ```{r, eval=FALSE}
 install.packages("cowplot")
 install.packages("gapminder")
 install.packages("ggrepel")
 install.packages("ggtext")
+install.packages("scales")
 install.packages("tidyverse")
-install.packages("virids")
+install.packages("viridis")
 ```
+
+```{r}
+library(cowplot)
+library(gapminder)
+library(ggrepel)
+library(ggtext)
+library(scales)
+library(tidyverse)
+library(viridis)
+```
+
+Notice that we expect participants with different levels of experience in this tutorial. Furthermore, the tutorial duration is only 3 hours and thus quite short. As a consequence, this material often links to other resources with more detailed information instead of blowing up the content of this material. However, where possible, these links don't simply lead to official online documentation etc. which may be hard to grasp for beginners, but instead to other workshop content created by this tutorial's main lecturer.
 
 # Part 1: A single plot
 
+Lets us first create a single plot to compare the life expectancy between 1952 and 2007 for seven countries, respectively. 
+
+## Data prep
+
+The data is courtesy of [the Gapminder foundation](https://www.gapminder.org/) and can easily be accessed via the [{gapminder}](https://jennybc.github.io/gapminder/) package. We can then make use of [the pipe operator `%>%`](https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#the-pipe-operator) to create a subset of the data via the [`filter()` function](https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#filter). Finally, in order for our ggplot to work as intended in the next step, we also need to format the year column as a factor instead of an integer value via [`mutate()`](https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#mutate). Both functions are from the [{dplyr}](https://dplyr.tidyverse.org/) package which we loaded as part of the [{tidyverse}](https://www.tidyverse.org/).
+
+```{r}
+dat <- gapminder::gapminder %>% 
+  filter(year == 1952 | year == 2007) %>% 
+  filter(country %in% c("Canada", "Germany", "Japan", "Netherlands", "Nigeria", "Vietnam", "Zimbabwe")) %>% 
+  mutate(year = as.factor(year))
+
+dat
+```
+
+## The base plot
+
+One typical way you may find data like this visualized is via a grouped bar plot. The minimum amount of code to create such a plot via ggplot is this:
+
+```{r}
+p <- ggplot(data = dat) +
+  aes(x = lifeExp, y = country, fill = year) +
+  geom_col(position = position_dodge())
+
+p
+```
+
+[Read this](https://schmidtpaul.github.io/dsfair_quarto/ch/summaryarticles/ggplot2intro.html#lets-start) if you are not familiar with the general ggplot syntax. We need to add `position = position_dodge()` to `geom_col()`, since the default is to stack the multiple bars (for the different years) on top of each other. Finally note that we save our ggplot into an object `p`, which is useful when building complex plots layer by layer ([learn more](https://schmidtpaul.github.io/dsfair_quarto/ch/summaryarticles/ggplot2intro.html#saving-and-reusing-plots)).
+
+## factor level reordering
+
+It may seem irritating that countries are sorted alphabetically starting at the bottom. Moreover, 1952 is also below 2007 in the plot (but not in the legend!). This is because these two columns are formatted as factors in our data and 
+
+## Reproducing a theme
+
+Using `theme()` allows us to format our plot in any way we want. Instead of picking things based on what feels good, let us here try to recreate the layout of a plot published in [*Nature*](https://doi.org/10.1038/d41586-019-03305-w) in '150 years of Nature: a data graphic charts our evolution' by Richard Monastersky & Richard Van Noorden (2019). [URL to the  plot](https://media.nature.com/lw767/magazine-assets/d41586-019-03305-w/d41586-019-03305-w_17345518.png).
+
+![](https://media.nature.com/lw767/magazine-assets/d41586-019-03305-w/d41586-019-03305-w_17345518.png)
+
+## axis formatting
+
 TODO
+
+ - no space below 0 (`expand =`)
+
+## Choosing colors
+
+TODO 
+
+ - copy colors from nature plot
+ - use viridis colors instead
+
+## Alternative: Dumbbell plot
+
+TODO
+
+ - discuss advantage
+ - create
+
 
 # Part 2: Multiple plots
 
