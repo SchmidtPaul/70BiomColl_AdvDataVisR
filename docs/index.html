@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-12-30">
+<meta name="dcterms.date" content="2024-01-08">
 
 <title>70BiomColl_AdvDataVisR - Tutorial: Advanced data visualization in R</title>
 <style>
@@ -150,12 +150,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#part-0-setup" id="toc-part-0-setup" class="nav-link active" data-scroll-target="#part-0-setup">Part 0: Setup</a></li>
   <li><a href="#part-1-a-single-plot" id="toc-part-1-a-single-plot" class="nav-link" data-scroll-target="#part-1-a-single-plot">Part 1: A single plot</a>
   <ul class="collapse">
-  <li><a href="#reproducing-a-theme" id="toc-reproducing-a-theme" class="nav-link" data-scroll-target="#reproducing-a-theme">Reproducing a theme</a></li>
-  <li><a href="#axis-formatting" id="toc-axis-formatting" class="nav-link" data-scroll-target="#axis-formatting">axis formatting</a></li>
-  <li><a href="#choosing-colors" id="toc-choosing-colors" class="nav-link" data-scroll-target="#choosing-colors">Choosing colors</a></li>
-  <li><a href="#alternative-dumbbell-plot" id="toc-alternative-dumbbell-plot" class="nav-link" data-scroll-target="#alternative-dumbbell-plot">Alternative: Dumbbell plot</a></li>
+  <li><a href="#data-prep" id="toc-data-prep" class="nav-link" data-scroll-target="#data-prep">Data prep</a></li>
+  <li><a href="#the-base-plot" id="toc-the-base-plot" class="nav-link" data-scroll-target="#the-base-plot">The base plot</a>
+  <ul class="collapse">
+  <li><a href="#factor-level-reordering" id="toc-factor-level-reordering" class="nav-link" data-scroll-target="#factor-level-reordering">(factor) level reordering</a></li>
   </ul></li>
-  <li><a href="#part-2-multiple-plots" id="toc-part-2-multiple-plots" class="nav-link" data-scroll-target="#part-2-multiple-plots">Part 2: Multiple plots</a></li>
+  <li><a href="#reproducing-a-theme" id="toc-reproducing-a-theme" class="nav-link" data-scroll-target="#reproducing-a-theme">Reproducing a theme</a>
+  <ul class="collapse">
+  <li><a href="#font" id="toc-font" class="nav-link" data-scroll-target="#font">font</a></li>
+  <li><a href="#axes" id="toc-axes" class="nav-link" data-scroll-target="#axes">axes</a></li>
+  <li><a href="#legend" id="toc-legend" class="nav-link" data-scroll-target="#legend">legend</a></li>
+  <li><a href="#grid-lines" id="toc-grid-lines" class="nav-link" data-scroll-target="#grid-lines">grid lines</a></li>
+  </ul></li>
+  <li><a href="#improve-the-plot" id="toc-improve-the-plot" class="nav-link" data-scroll-target="#improve-the-plot">Improve the plot</a>
+  <ul class="collapse">
+  <li><a href="#labels" id="toc-labels" class="nav-link" data-scroll-target="#labels">Labels</a></li>
+  <li><a href="#dumbbell-plot" id="toc-dumbbell-plot" class="nav-link" data-scroll-target="#dumbbell-plot">Dumbbell plot</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#part-2-multiple-plots" id="toc-part-2-multiple-plots" class="nav-link" data-scroll-target="#part-2-multiple-plots">Part 2: Multiple plots</a>
+  <ul class="collapse">
+  <li><a href="#choosing-colors" id="toc-choosing-colors" class="nav-link" data-scroll-target="#choosing-colors">Choosing colors</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -196,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">December 30, 2023</p>
+      <p class="date">January 8, 2024</p>
     </div>
   </div>
   
@@ -206,7 +222,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>This is the supporting material for the tutorial <strong>Advanced data visualization in R</strong> which takes place on the 28.02.2024 09:00-12:00. Here is the tutorial description as displayed on the <a href="https://www.biometrische-gesellschaft.de/en/events/biometric-colloquia/70th-biometrical-colloquium-2024-in-luebeck/conference-program.html">website’s conference program</a>:</p>
+<p>This is the supporting material for the tutorial <strong>Advanced data visualization in R</strong> which takes place 28.02.2024 09:00-12:00. Here is the tutorial description as displayed on the <a href="https://www.biometrische-gesellschaft.de/en/events/biometric-colloquia/70th-biometrical-colloquium-2024-in-luebeck/conference-program.html">website’s conference program</a>:</p>
 <blockquote class="blockquote">
 <p><strong>Advanced data visualization in R: (Re)producing professional plots with ggplot2 and the tidyverse</strong></p>
 <p>Lecturer: Paul Schmidt (BioMath GmbH, Hamburg)</p>
@@ -214,18 +230,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Deep dive into ggplot2: Understand the intricacies of ggplot2 for top-tier data visualization</li>
 <li>Data manipulation with tidyverse: Utilize packages like dplyr, tidyr, and forcats to shape data optimally for creating graphs</li>
-<li>Aestetic fine-tuning: Master the skills of axis formatting, theme detailing, and color selection</li>
+<li>Aesthetic fine-tuning: Master the skills of axis formatting, theme detailing, and color selection</li>
 <li>Reproducing Exercise: Recreate published plots to understand the application of ggplot2 techniques in real-world scenarios</li>
 <li>Exporting excellence: Learn best practices for exporting plots in publication-ready formats</li>
 </ul>
 <p>Target group:</p>
 <ul>
-<li>Anyone wanting to produce or present high-quality plots. Conveying complex data insights through refinde visualizations is a relevant part of statistical analysis</li>
+<li>Anyone wanting to produce or present high-quality plots. Conveying complex data insights through refined visualizations is a relevant part of statistical analysis</li>
 </ul>
 <p>Prerequisites:</p>
 <ul>
 <li>Basic understanding of R programming is required</li>
-<li>Basci knowledge of ggplot2 and the tidyverse is beneficial, but not required</li>
+<li>Basic knowledge of ggplot2 and the tidyverse is beneficial, but not required</li>
 <li>R-packages: tidyverse, cowplot, ggrepel, ggtext, viridis</li>
 </ul>
 <p>Format: Hybrid</p>
@@ -240,8 +256,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggrepel"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggtext"</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"scales"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"viridis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"showtext"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"viridis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cowplot)</span>
@@ -249,21 +266,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggtext)</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(showtext)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>showtext<span class="sc">::</span><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Notice that we expect participants with different levels of experience in this tutorial. Furthermore, the tutorial duration is only 3 hours and thus quite short. As a consequence, this material often links to other resources with more detailed information instead of blowing up the content of this material. However, where possible, these links don’t simply lead to official online documentation etc. which may be hard to grasp for beginners, but instead to other workshop content created by this tutorial’s main lecturer.</p>
 </section>
 <section id="part-1-a-single-plot" class="level1">
 <h1>Part 1: A single plot</h1>
-<p>Lets us first create a single plot to compare the life expectancy between 1952 and 2007 for seven countries, respectively. The data is courtesy of <a href="https://www.gapminder.org/">the Gapminder foundation</a> and can easily be accessed via the <a href="https://jennybc.github.io/gapminder/">{gapminder}</a> package. We can then make use of <a href="https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#the-pipe-operator">the pipe operator <code>%&gt;%</code></a> to create a subset of the data via the <a href="https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#filter"><code>filter()</code> function</a>. Finally, in order for our ggplot to work as intended in the next step, we also need to format the year column as a factor instead of an integer value via <a href="https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#mutate"><code>mutate()</code></a>. Both functions are from the <a href="https://dplyr.tidyverse.org/">{dplyr}</a> package which we loaded as part of the <a href="https://www.tidyverse.org/">{tidyverse}</a>.</p>
+<p>Lets us first create a single plot to compare the life expectancy between 1952 and 2007 for seven countries, respectively.</p>
+<section id="data-prep" class="level2">
+<h2 class="anchored" data-anchor-id="data-prep">Data prep</h2>
+<p>The data is courtesy of <a href="https://www.gapminder.org/">the Gapminder foundation</a> and can easily be accessed via the <a href="https://jennybc.github.io/gapminder/">{gapminder}</a> package. We can then make use of <a href="https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#the-pipe-operator">the pipe operator <code>%&gt;%</code></a> to create a subset of the data via the <a href="https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#filter"><code>filter()</code> function</a>. Then, in order for our ggplot to work as intended in the next step, we also need to format the year column as a factor instead of an integer value via <a href="https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#mutate"><code>mutate()</code></a>. Both functions are from the <a href="https://dplyr.tidyverse.org/">{dplyr}</a> package which we loaded as part of the <a href="https://www.tidyverse.org/">{tidyverse}</a>. Finally, we use <code>droplevels()</code> to get rid of the factor levels that are now no longer present in the data (i.e.&nbsp;the countries we did not filter for).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> gapminder<span class="sc">::</span>gapminder <span class="sc">%&gt;%</span> </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">1952</span> <span class="sc">|</span> year <span class="sc">==</span> <span class="dv">2007</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(country <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Canada"</span>, <span class="st">"Germany"</span>, <span class="st">"Japan"</span>, <span class="st">"Netherlands"</span>, <span class="st">"Nigeria"</span>, <span class="st">"Vietnam"</span>, <span class="st">"Zimbabwe"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">as.factor</span>(year))</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">as.factor</span>(year)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">droplevels</span>()</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 14 × 6
    country     continent year  lifeExp       pop gdpPercap
@@ -284,33 +308,363 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 14 Zimbabwe    Africa    2007     43.5  12311143      470.</code></pre>
 </div>
 </div>
+</section>
+<section id="the-base-plot" class="level2">
+<h2 class="anchored" data-anchor-id="the-base-plot">The base plot</h2>
 <p>One typical way you may find data like this visualized is via a grouped bar plot. The minimum amount of code to create such a plot via ggplot is this:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dat) <span class="sc">+</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">y =</span> country, <span class="at">fill =</span> year) <span class="sc">+</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="1650"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="1800"></p>
 </div>
 </div>
-<p><a href="https://schmidtpaul.github.io/dsfair_quarto/ch/summaryarticles/ggplot2intro.html#lets-start">Read this</a> if you are not familiar with the general ggplot syntax. We need to add <code>position = position_dodge()</code> to <code>geom_col()</code>, since the default is to stack the multiple bars (for the different years) on top of each other.</p>
-<p>TODO</p>
-<ul>
-<li>get data ready</li>
-<li>create grouped bar plot</li>
-</ul>
+<p><a href="https://schmidtpaul.github.io/dsfair_quarto/ch/summaryarticles/ggplot2intro.html#lets-start">Read this</a> if you are not familiar with the general ggplot syntax. We need to add <code>position = position_dodge()</code> to <code>geom_col()</code>, since the default is to stack the multiple bars (for the different years) on top of each other (as seen in the <em>Nature</em> example plot below).</p>
+<section id="factor-level-reordering" class="level3">
+<h3 class="anchored" data-anchor-id="factor-level-reordering">(factor) level reordering</h3>
+<p>It may seem irritating that countries are sorted alphabetically starting at the bottom. Moreover, 1952 is below 2007 in the plot (but not in the legend!). This is because these two columns are formatted as factors in our data and by default factor levels are sorted alphabetically.</p>
+<p>Note that ggplot applies this factor level order, but does it so from bottom to top.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(dat<span class="sc">$</span>country)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Canada"      "Germany"     "Japan"       "Netherlands" "Nigeria"    
+[6] "Vietnam"     "Zimbabwe"   </code></pre>
+</div>
+</div>
+<p>A useful package for dealing with factors in R is <a href="https://forcats.tidyverse.org/">{forcats}</a> whose functions all start with <code>fct_*</code>. One way of dealing with this is changing the factor level order in the data before passing it to ggplot. Here, we may simply reverse the order via <code>fct_rev()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(country), <span class="sc">~</span> <span class="fu">fct_rev</span>(.x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(dat<span class="sc">$</span>country)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Zimbabwe"    "Vietnam"     "Nigeria"     "Netherlands" "Japan"      
+[6] "Germany"     "Canada"     </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dat) <span class="sc">+</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">y =</span> country, <span class="at">fill =</span> year) <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Alternative 1</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># alternatively, you may apply fct_rev() inside aes() instead of altering the data beforehand </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dat) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">y =</span> <span class="fu">fct_rev</span>(country), <span class="at">fill =</span> year) <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Alternative 2</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># alternatively, you may manually provide the levels in the desired order within scale_y_discrete()</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dat) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">y =</span> country, <span class="at">fill =</span> year) <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>()) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="st">"Zimbabwe"</span>, <span class="st">"Vietnam"</span>, <span class="st">"Nigeria"</span>, <span class="st">"Netherlands"</span>, <span class="st">"Japan"</span>, <span class="st">"Germany"</span>, <span class="st">"Canada"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>However, it probably makes more sense to sort the countries according to the data. Here, we could sort them according to their life expectancy in 2007.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>sorted_countries <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="st">"2007"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(lifeExp) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(country) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.character</span>()</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">fct_relevel</span>(country, sorted_countries))</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dat) <span class="sc">+</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">y =</span> country, <span class="at">fill =</span> year) <span class="sc">+</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
+<p>Next, we address the order of years in the plot and the legend. As you can see in the previous plots, once more the first factor level (1952) is on the bottom, while the second level (2007) is on top. Thus, we could use one of the approaches shown for <code>country</code> to change that. More precisely, let’s take the approach of <em>Alternative 1</em> and use <code>fct_rev()</code> inside the <code>aes()</code>.</p>
+<p>Note however, that while this changes the order of the years in the plot, it does not affect their order in the legend. To address that, we can use the <code>limits =</code> argument in <code>scale_fill_manual()</code> (which corresponds to <em>Alternative 2</em> above):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dat) <span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">y =</span> country, <span class="at">fill =</span> <span class="fu">fct_rev</span>(year)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>()) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_discrete</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="st">"1952"</span>, <span class="st">"2007"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Alternative</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># alternatively, you may reverse the legend order via guides()</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dat) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">y =</span> country, <span class="at">fill =</span> <span class="fu">fct_rev</span>(year)) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>()) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="fu">guide_legend</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
 <section id="reproducing-a-theme" class="level2">
 <h2 class="anchored" data-anchor-id="reproducing-a-theme">Reproducing a theme</h2>
+<p>Now that we’ve got the basics correct, the next thing I would want to change is things like the theme, i.e.&nbsp;the non-data components of the plot: titles, labels, fonts, background, gridlines, and legends.</p>
 <p>Using <code>theme()</code> allows us to format our plot in any way we want. Instead of picking things based on what feels good, let us here try to recreate the layout of a plot published in <a href="https://doi.org/10.1038/d41586-019-03305-w"><em>Nature</em></a> in ‘150 years of Nature: a data graphic charts our evolution’ by Richard Monastersky &amp; Richard Van Noorden (2019). <a href="https://media.nature.com/lw767/magazine-assets/d41586-019-03305-w/d41586-019-03305-w_17345518.png">URL to the plot</a>.</p>
 <p><img src="https://media.nature.com/lw767/magazine-assets/d41586-019-03305-w/d41586-019-03305-w_17345518.png" class="img-fluid"></p>
+<p>Thus, a better starting point would be to use the <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">complete theme</a> <code>theme_minimal()</code> instead of the default <code>theme_gray()</code>. From here, we can further adjust things via <code>theme()</code>.</p>
+<p>Furthermore, let’s also pick two of the colors used in that image (e.g.&nbsp;via any <a href="https://google.gprivate.com/search.php?search?q=pick+color+from+image+online">online color picker</a>) for our years. We can create a named vector <code>year_colors</code> and when changing <code>scale_fill_discrete()</code> to <code>scale_fill_manual()</code> supply it via the <code>values =</code> argument.</p>
+<p>Finally, as our ggplot-code is getting longer, let’s start saving out current plot into an object <code>p</code> and reuse it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>year_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1952"</span> <span class="ot">=</span> <span class="st">"#37A9E1"</span>, <span class="st">"2007"</span> <span class="ot">=</span> <span class="st">"#F7AA59"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dat) <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">y =</span> country, <span class="at">fill =</span> <span class="fu">fct_rev</span>(year)) <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>()) <span class="sc">+</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Year"</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="st">"1952"</span>, <span class="st">"2007"</span>), </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> year_colors) <span class="sc">+</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
+<section id="font" class="level3">
+<h3 class="anchored" data-anchor-id="font">font</h3>
+<p>Here, I found a font named <em>Kanit</em> that looks similar enough by browsing through the <a href="https://fonts.google.com/">Google Fonts</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>sysfonts<span class="sc">::</span><span class="fu">font_add_google</span>(<span class="st">"Kanit"</span>, <span class="st">"kanit"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>showtext<span class="sc">::</span><span class="fu">showtext_auto</span>()</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># We alreday did this above, but dont forget about it:</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># showtext::showtext_opts(dpi = 300)</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>long_subtitle <span class="ot">&lt;-</span> <span class="st">"In the mid-twentieth century, global life expectancy was shaped by post-war recovery, with variations stark across countries. As decades progressed, public health advances and socioeconomic growth painted a new picture of longevity. The data now reflect a world where life expectancy in 2007 often mirrors a vastly improved quality of life compared to 1952."</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"LIFE EXPECTANCY"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> long_subtitle</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> ggtext<span class="sc">::</span><span class="fu">element_textbox_simple</span>(<span class="at">size =</span> <span class="dv">10</span>, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">0</span>))</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
 </section>
-<section id="axis-formatting" class="level2">
-<h2 class="anchored" data-anchor-id="axis-formatting">axis formatting</h2>
+<section id="axes" class="level3">
+<h3 class="anchored" data-anchor-id="axes">axes</h3>
+<p>More details on axis formatting can be found <a href="https://schmidtpaul.github.io/dsfair_quarto/ch/summaryarticles/ggplot2intro.html#axes">here</a>. For our specific goal, we start by removing the axis titles as well as unnecessary space beyond the limits of each axis. Furthermore, there should be no axis line for the y-axis and a relatively thick black line with grey ticks for the x-axis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># remove title</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="cn">NULL</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># no extra space above or below</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># remove title</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="cn">NULL</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># only 5% extra space above upper limit</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.05</span>))</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"#AAAAAA"</span>),</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.x =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"#AAAAAA"</span>, <span class="at">linewidth =</span> <span class="fl">0.4</span>),</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.length.x =</span> <span class="fu">unit</span>(<span class="dv">4</span>, <span class="st">"pt"</span>),</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line.x =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">0.6</span>)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
+</section>
+<section id="legend" class="level3">
+<h3 class="anchored" data-anchor-id="legend">legend</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="fu">guide_legend</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">title.position =</span> <span class="st">"left"</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">nrow =</span> <span class="dv">1</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.box.just =</span> <span class="st">"left"</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.justification =</span> <span class="st">"left"</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.margin =</span> <span class="fu">margin</span>(<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">57</span>, <span class="at">unit =</span> <span class="st">"pt"</span>),</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="fl">0.4</span>, <span class="st">"cm"</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
+</section>
+<section id="grid-lines" class="level3">
+<h3 class="anchored" data-anchor-id="grid-lines">grid lines</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.x =</span> <span class="fu">element_line</span>(<span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">color =</span> <span class="st">"#AAAAAA"</span>, <span class="at">linewidth =</span> <span class="fl">0.3</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="improve-the-plot" class="level2">
+<h2 class="anchored" data-anchor-id="improve-the-plot">Improve the plot</h2>
+<section id="labels" class="level3">
+<h3 class="anchored" data-anchor-id="labels">Labels</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(lifeExp), <span class="at">group =</span> <span class="fu">fct_rev</span>(year)), </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="fl">1.1</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"white"</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="st">"kanit"</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
+</section>
+<section id="dumbbell-plot" class="level3">
+<h3 class="anchored" data-anchor-id="dumbbell-plot">Dumbbell plot</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>dat_wide <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(country, year, lifeExp) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> year, <span class="at">values_from =</span> lifeExp, <span class="at">names_prefix =</span> <span class="st">'year_'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dat, <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">y =</span> country, <span class="at">color =</span> <span class="fu">fct_rev</span>(year))) <span class="sc">+</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Year"</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="st">"1952"</span>, <span class="st">"2007"</span>), </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> year_colors</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"LIFE EXPECTANCY"</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> long_subtitle</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="cn">NULL</span>,</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># expand = c(0, 0)</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="cn">NULL</span>,</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># expand = expansion(mult = c(0, 0.05))</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="fu">guide_legend</span>(<span class="at">title.position =</span> <span class="st">"left"</span>, <span class="at">nrow =</span> <span class="dv">1</span>)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> ggtext<span class="sc">::</span><span class="fu">element_textbox_simple</span>(<span class="at">size =</span> <span class="dv">10</span>, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">0</span>)),</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"#AAAAAA"</span>),</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.x =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"#AAAAAA"</span>, <span class="at">linewidth =</span> <span class="fl">0.4</span>),</span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.length.x =</span> <span class="fu">unit</span>(<span class="dv">4</span>, <span class="st">"pt"</span>),</span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line.x =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">0.6</span>),</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.box.just =</span> <span class="st">"left"</span>,</span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.justification =</span> <span class="st">"left"</span>,</span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.margin =</span> <span class="fu">margin</span>(<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">57</span>, <span class="at">unit =</span> <span class="st">"pt"</span>),</span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="fl">0.4</span>, <span class="st">"cm"</span>),</span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.x =</span> <span class="fu">element_line</span>(<span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">color =</span> <span class="st">"#AAAAAA"</span>, <span class="at">linewidth =</span> <span class="fl">0.3</span>)</span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> p2 <span class="sc">+</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dat_wide,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> year_1952, <span class="at">xend =</span> year_2007, <span class="at">y =</span> country, <span class="at">yend =</span> country),</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#AAAAAA"</span>,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>dat_wide <span class="ot">&lt;-</span> dat_wide <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_x =</span> <span class="fu">pmax</span>(year_2007, year_1952),</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_num =</span> year_2007 <span class="sc">-</span> year_1952,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_chr =</span> <span class="fu">sprintf</span>(<span class="st">"%+d"</span>, <span class="fu">round</span>(diff_num))</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> p2 <span class="sc">+</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(lifeExp)),</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">2.5</span>,</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dat_wide,</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y =</span> country, <span class="at">x =</span> max_x, <span class="at">label =</span> diff_chr),</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">2.5</span>,</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#AAAAAA"</span>,</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_nudge</span>(<span class="at">x =</span> <span class="dv">1</span>)</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="1800"></p>
+</div>
+</div>
 <p>TODO</p>
 <ul>
-<li>no space below 0 (<code>expand =</code>)</li>
+<li>discuss advantage</li>
 </ul>
 </section>
+</section>
+</section>
+<section id="part-2-multiple-plots" class="level1">
+<h1>Part 2: Multiple plots</h1>
+<p>TODO</p>
 <section id="choosing-colors" class="level2">
 <h2 class="anchored" data-anchor-id="choosing-colors">Choosing colors</h2>
 <p>TODO</p>
@@ -318,21 +672,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>copy colors from nature plot</li>
 <li>use viridis colors instead</li>
 </ul>
-</section>
-<section id="alternative-dumbbell-plot" class="level2">
-<h2 class="anchored" data-anchor-id="alternative-dumbbell-plot">Alternative: Dumbbell plot</h2>
-<p>TODO</p>
-<ul>
-<li>discuss advantage</li>
-<li>create</li>
-</ul>
-</section>
-</section>
-<section id="part-2-multiple-plots" class="level1">
-<h1>Part 2: Multiple plots</h1>
-<p>TODO</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
