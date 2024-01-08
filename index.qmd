@@ -248,6 +248,7 @@ p <- p +
     title = "LIFE EXPECTANCY",
     subtitle = long_subtitle
   ) +
+  theme(text = element_text(family = "kanit")) +
   theme(
     plot.title.position = "plot",
     plot.title = element_text(size = 15, face = "bold"),
@@ -369,6 +370,7 @@ p2 <- ggplot(data = dat, aes(x = lifeExp, y = country, color = fct_rev(year))) +
   ) +
   theme_minimal(base_size = 12) +
   theme(
+    text = element_text(family = "kanit"),
     plot.title.position = "plot",
     plot.title = element_text(size = 15, face = "bold"),
     plot.subtitle = ggtext::element_textbox_simple(size = 10, margin = margin(5, 0, 10, 0)),
@@ -416,7 +418,8 @@ p2 <- p2 +
   geom_text(
     mapping = aes(label = round(lifeExp)),
     size = 2.5,
-    vjust = -1
+    vjust = -1,
+    family = "kanit"
   ) +
   geom_text(
     data = dat_wide,
@@ -425,7 +428,8 @@ p2 <- p2 +
     size = 2.5,
     hjust = 0,
     color = "#AAAAAA",
-    position = position_nudge(x = 1)
+    position = position_nudge(x = 1),
+    family = "kanit"
   )
 
 p2
