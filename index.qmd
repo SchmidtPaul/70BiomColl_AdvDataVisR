@@ -1,6 +1,22 @@
 ---
 title: "Tutorial: Advanced data visualization in R"
 subtitle: "70th Biometrical Colloquium 2024 in Luebeck"
+execute: 
+  message: false
+  warning: false
+  echo: true
+format: 
+  html: 
+    fig-height: 4
+    fig-dpi: 300
+    fig-width: 6
+    fig-align: center
+knitr:
+  opts_chunk:
+    out.width: 100%
+    fig.showtext: TRUE
+    collapse: true
+    comment: "#>"
 ---
 
 This is the supporting material for the tutorial **Advanced data visualization in R** which takes place 28.02.2024 09:00-12:00. Here is the tutorial description as displayed on the [website's conference program](https://www.biometrische-gesellschaft.de/en/events/biometric-colloquia/70th-biometrical-colloquium-2024-in-luebeck/conference-program.html):
@@ -60,12 +76,12 @@ showtext::showtext_opts(dpi = 300)
 ```
 
 ```{r setup, echo=FALSE, warning=FALSE, error=FALSE}
-knitr::opts_chunk$set(
-  fig.width = 6,  # Width in inches
-  fig.height = 4, # Height in inches
-  dpi = 300,      # DPI for figures
-  fig.showtext = TRUE
-)
+# knitr::opts_chunk$set(
+#   fig.width = 6,  # Width in inches
+#   fig.height = 4, # Height in inches
+#   dpi = 300,      # DPI for figures
+#   fig.showtext = TRUE
+# )
 ```
 
 ```{r, echo=FALSE}
@@ -179,7 +195,6 @@ ggplot(data = dat) +
   geom_col(position = position_dodge())
 ```
 
-
 Next, we address the order of years in the plot and the legend. As you can see in the previous plots, once more the first factor level (1952) is on the bottom, while the second level (2007) is on top. Thus, we could use one of the approaches shown for `country` to change that. More precisely, let's take the approach of *Alternative 1* and use `fct_rev()` inside the `aes()`. 
 
 Note however, that while this changes the order of the years in the plot, it does not affect their order in the legend. To address that, we can use the `limits =` argument in `scale_fill_manual()` (which corresponds to *Alternative 2* above):
@@ -224,7 +239,7 @@ p <- ggplot(data = dat) +
   geom_col(position = position_dodge()) +
   scale_fill_manual(
     name = "Year",
-    limits = c("1952", "2007"), 
+    limits = names(year_colors), 
     values = year_colors) +
   theme_minimal(base_size = 12)
 
@@ -233,7 +248,11 @@ p
 
 ### font
 
-Here, I found a font named *Kanit* that looks similar enough by browsing through the [Google Fonts](https://fonts.google.com/).
+To further replicate the aesthetics of the Nature plot, we introduce a custom font named *Kanit*. This font, available through [Google Fonts](https://fonts.google.com/), has been chosen for its stylistic resemblance to the one used in the Nature publication. 
+
+The process begins by fetching the font from Google Fonts and making it available for use in our R session via `sysfonts::font_add_google("Kanit", "kanit")`. Next, `showtext::showtext_auto()` activates the use of custom fonts in plots. It's important to also run `showtext::showtext_opts(dpi = 300)` to avoid getting unexpected results. This is because `{showtext}` uses a default of 72 dpi, while e.g. exporting plots via `ggsave()` defaults to `dpi = 300`. Furthermore, you may also want the dpi to be 300 (or some other number) when rendering plots within your RMarkdown via `knitr::opts_chunk$set(dpi = 300)` or quarto document via `fig-dpi: 300`.
+
+We add a title and subtitle via `labs()` and then apply the font to all text elements via `text = element_text(family = "kanit")`. For some reason, the default position of title and subtitle in a ggplot is left-aligned with the y-axis - to instead left-align it with the left side of the entire plot, we apply `plot.title.position = "plot"`. Making the title a bit bigger and bold is straightforward. However, having a subtitle (or other text elements) that has automatic line breaks when the string is too long actually requires `{ggtext}` and more specifically a `ggtext::element_textbox_simple()` instead of the default `ggplot2::element_text()`. 
 
 ```{r}
 sysfonts::font_add_google("Kanit", "kanit")
@@ -260,28 +279,24 @@ p
 
 ### axes
 
-More details on axis formatting can be found [here](https://schmidtpaul.github.io/dsfair_quarto/ch/summaryarticles/ggplot2intro.html#axes). For our specific goal, we start by removing the axis titles as well as unnecessary space beyond the limits of each axis. Furthermore, there should be no axis line for the y-axis and a relatively thick black line with grey ticks for the x-axis.
+For our specific goal, we start by removing the axis titles as well as unnecessary space beyond the limits of each axis. Furthermore, there should be no axis line for the y-axis and a relatively thick black line with grey ticks for the x-axis. More details on axis formatting can be found [here](https://schmidtpaul.github.io/dsfair_quarto/ch/summaryarticles/ggplot2intro.html#axes).
 
 ```{r}
 p <- p +
   scale_y_discrete(
-    # remove title
-    name = NULL,
-    # no extra space above or below
-    expand = c(0,0)
+    name = NULL, # remove title
+    expand = c(0,0) # no extra space above or below
   ) + 
   scale_x_continuous(
-    # remove title
-    name = NULL,
-    # only 5% extra space above upper limit
-    expand = expansion(mult = c(0, 0.05))
+    name = NULL, # remove title
+    expand = expansion(mult = c(0, 0.05)) # only 5% extra space above upper limit
   ) +
   theme(
-    axis.line.y = element_blank(),
-    axis.text.x = element_text(color = "#AAAAAA"),
-    axis.ticks.x = element_line(color = "#AAAAAA", linewidth = 0.4),
-    axis.ticks.length.x = unit(4, "pt"),
-    axis.line.x = element_line(color = "black", linewidth = 0.6)
+    axis.line.y = element_blank(), # remove line on y-axis
+    axis.text.x = element_text(color = "#AAAAAA"), # x-axis label color
+    axis.ticks.x = element_line(color = "#AAAAAA", linewidth = 0.4), # x-axis tick color & width
+    axis.ticks.length.x = unit(4, "pt"), # x-axis tick length
+    axis.line.x = element_line(color = "black", linewidth = 0.6) # x-axis line color & width
   )
 
 p
@@ -289,11 +304,16 @@ p
 
 ### legend
 
+Our legend is supposed to be above the plot and left-aligned. We partly achieve this via `legend.position`, `legend.box.just` and `legend.justification`, but unfortunately this does not fully achieve the goal. We want to have a legend that is left-aligned with respect to the entire plot, not to the y-axis. As far as I know and unlike `plot.title.position = "plot"` which we used above, there is no way of achieving this normally. Thus, we here use a hack by setting the left `margin()` of the legend to a negative value that looks good enough.
+
+Besides the position, the legend title is made bold via `legend.title = element_text(face = "bold")` and we force all elements of the legend to be in one row via `guide_legend(title.position = "left", nrow = 1)`. Finally, the size of the colored squares in the legend is reduced via `legend.key.size = unit(0.4, "cm")`.
+
 ```{r}
 p <- p +
-  guides(fill = guide_legend(
-    title.position = "left",
-    nrow = 1)
+  guides(
+    fill = guide_legend(
+      title.position = "left",
+      nrow = 1)
   ) +
   theme(
     legend.position = "top",
@@ -309,6 +329,8 @@ p
 
 ### grid lines
 
+Lastly, we could adjust the grid lines. By default, ggplot has major and minor grid lines for both axes. Yet, we only want thin, dotted, grey lines for the major grid of the x-axis:
+
 ```{r}
 p <- p +
   theme(
@@ -322,7 +344,13 @@ p
 
 ## Improve the plot
 
+We have now mostly reproduced the layout of the *Nature* plot and applied it to our plot. At this point, we could try out things that may improve the plot.
+
 ### Labels
+
+In certain cases it can be beneficial to additionally label data points. In this plot, we may simply label each bar with rounded life expectancy it represents. We here do so via `geom_text()` where `aes(label = round(lifeExp))`. Note that we also need to add `group = fct_rev(year)` here. This is because so far we applied `fill = fct_rev(year)` in the general `aes()` which led to different groups due to the different fill colors so that `geom_col(position = position_dodge())` knew which groups/bars were supposed to be dodged. However, our labels created via `geom_text()` do not have a fill attribute but should still be dodged per year in the same way. Hence, `group = fct_rev(year)` is required and moreover, `position_dodge(width = 0.9)` actually needs a width value here set to the default dodge with for bars.
+
+Once this is out the way, we make the text white and right-align it with extra space via a value for `hjust` that is larger than 1. Finally, don't forget to apply `family = "kanit"` here as well, as geoms are not part of the `theme()` and thus this `geom_text()` knows nothing about Kanit.
 
 ```{r}
 p <- p +
@@ -339,15 +367,31 @@ p
 
 ### Dumbbell plot
 
+When it comes to visualizing changes or differences between two data points (like life expectancy across two different years in our case), dumbbell plots can offer a clearer and more direct comparison than grouped bar plots. While grouped bar plots efficiently display the individual values, dumbbell plots excel in highlighting the actual change or difference between these values. They connect the two data points with a line, making it visually immediate to see the extent of change. This is particularly beneficial in cases where the focus of the analysis is on the change itself rather than the absolute values. Moreover, dumbbell plots reduce clutter and can be easier to read when dealing with a large number of categories. By using different colors for the points and a subtle line to connect them, dumbbell plots provide a balanced emphasis on both the individual data points and their relative change, thereby offering a more nuanced view of the data. This makes them an excellent choice for our comparison of life expectancies over time.
+
+To create such a dumbbell plot, we need a transformed, wide version of our data (more on long/wide format [here](https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#longwide-format)):
+
 ```{r}
 dat_wide <- dat %>% 
   select(country, year, lifeExp) %>% 
   pivot_wider(names_from = year, values_from = lifeExp, names_prefix = 'year_')
+
+dat_wide
 ```
 
+Furthermore, we need most of what we did so far again with our ggplot object `p` again, but we do need to make some changes, which is why it makes sense to recreate `p2` from scratch. Here are the changes:
+
+ * in the general `aes()` we use `color = fct_rev(year)` instead of `fill = fct_rev(year)`
+ * accordingly, we also use `scale_color_manual()` instead of `scale_fill_manual()`
+ * we actually do want extra space beyond the limits for both axes so we remove the `expand =` statements
+ * we no longer need bars created via `geom_col()` 
+ * we no longer the labels created via `geom_text()`
+ 
+Given this, we have a well-prepared ggplot in need of geoms:
 
 ```{r}
-p2 <- ggplot(data = dat, aes(x = lifeExp, y = country, color = fct_rev(year))) +
+p2 <- ggplot(data = dat) +
+  aes(x = lifeExp, y = country, color = fct_rev(year)) +
   scale_color_manual(
     name = "Year",
     limits = c("1952", "2007"), 
@@ -359,11 +403,9 @@ p2 <- ggplot(data = dat, aes(x = lifeExp, y = country, color = fct_rev(year))) +
   ) +
   scale_y_discrete(
     name = NULL,
-    # expand = c(0, 0)
   ) + 
   scale_x_continuous(
     name = NULL,
-    # expand = expansion(mult = c(0, 0.05))
   ) +
   guides(
     fill = guide_legend(title.position = "left", nrow = 1)
@@ -393,6 +435,8 @@ p2 <- ggplot(data = dat, aes(x = lifeExp, y = country, color = fct_rev(year))) +
 p2
 ```
 
+We only need two geoms to create a dumbbell plot here: `geom_segment()` draws a straight line between points (`x`, `y`) and (`xend`, `yend`), which works nicely with the `dat_wide` created above. Note that the `color = "#AAAAAA"` overrides the `color = fct_rev(year)` from the general `aes()` that would otherwise apply. The points are automatically created and colored via `geom_point()` based on `dat` and the general `aes()`. 
+
 ```{r}
 p2 <- p2 +
   geom_segment(
@@ -405,6 +449,8 @@ p2 <- p2 +
 
 p2
 ```
+
+### Labels again
 
 ```{r}
 dat_wide <- dat_wide %>% 
