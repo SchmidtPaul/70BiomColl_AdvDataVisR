@@ -1,0 +1,1 @@
+Sitemap: https://github.com/SchmidtPaul/70BiomColl_AdvDataVisR/sitemap.xml

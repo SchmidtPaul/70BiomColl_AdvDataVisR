@@ -6,20 +6,36 @@ website:
   title: "70BiomColl_AdvDataVisR"
   navbar:
     title: "Tutorial: Advanced data visualization in R"
-    left:
-      - href: index.qmd
-        text: Home
     right:
       - text: Contact
         href: https://schmidtpaul.github.io/
       - icon: github
         href: https://github.com/SchmidtPaul/70BiomColl_AdvDataVisR
         aria-label: GitHub
+  page-footer: 
+    right:
+      - text: '<p>All content licensed under a <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial 4.0 International License</a>.</p>'
+    border: true
+    background: "#00923f"
+  site-url: https://github.com/SchmidtPaul/70BiomColl_AdvDataVisR
 
 format:
   html:
-    theme: cosmo
+    anchor-sections: true
     css: styles.css
+    code-fold: false
+    code-summary: "Click to show/hide code"
+    code-overflow: scroll
+    code-copy: true
+    code-link: true
+    code-tools: true
+    citations-hover: true
+    footnotes-hover: true
+    theme: theme.scss
+    toc: true
+  pdf:
+    colorlinks: true
+    number-sections: true
     toc: true
 
 author:
@@ -44,6 +60,5 @@ execute:
   message: false
   freeze: auto
   
-fig-dpi: 300
-fig-width: 5.5
-fig-height: 3.5
+citation: 
+  publisher: "70th Biometrical Colloquium 2024 in Lübeck"

@@ -19,7 +19,12 @@ knitr:
     comment: "#>"
 ---
 
-This is the supporting material for the tutorial **Advanced data visualization in R** which takes place 28.02.2024 09:00-12:00. Here is the tutorial description as displayed on the [website's conference program](https://www.biometrische-gesellschaft.de/en/events/biometric-colloquia/70th-biometrical-colloquium-2024-in-luebeck/conference-program.html):
+```{r, echo=FALSE}
+knitr::opts_chunk$set(class.output = "custom-output")
+```
+
+
+This is the supporting material for the tutorial **Advanced data visualization in R** which is part of the 70th Biometrical Colloquium 2024 in Luebeck and takes place 28.02.2024 09:00-12:00. Here is the tutorial description as displayed on the [website's conference program](https://www.biometrische-gesellschaft.de/en/events/biometric-colloquia/70th-biometrical-colloquium-2024-in-luebeck/conference-program.html):
 
 > **Advanced data visualization in R: (Re)producing professional plots with ggplot2 and the tidyverse**
 >
@@ -52,25 +57,27 @@ The decision on which plots to create in this workshop was inspired by [this blo
 You will need to install and load the following packages
 
 ```{r, eval=FALSE}
-install.packages("cowplot")
+# install.packages("cowplot")
 install.packages("gapminder")
-install.packages("ggrepel")
+install.packages("ggh4x")
+# install.packages("ggrepel")
 install.packages("ggtext")
 install.packages("scales")
 install.packages("showtext")
 install.packages("tidyverse")
-install.packages("viridis")
+# install.packages("viridis")
 ```
 
 ```{r}
-library(cowplot)
+# library(cowplot)
 library(gapminder)
-library(ggrepel)
+library(ggh4x)
+# library(ggrepel)
 library(ggtext)
 library(scales)
 library(showtext)
 library(tidyverse)
-library(viridis)
+# library(viridis)
 
 showtext::showtext_opts(dpi = 300)
 ```
@@ -232,7 +239,7 @@ Furthermore, let's also pick two of the colors used in that image (e.g. via any 
 Finally, as our ggplot-code is getting longer, let's start saving out current plot into an object `p` and reuse it.
 
 ```{r}
-year_colors <- c("1952" = "#37A9E1", "2007" = "#F7AA59")
+year_colors <- c("1952" = "#F7AA59", "2007" = "#37A9E1")
 
 p <- ggplot(data = dat) +
   aes(x = lifeExp, y = country, fill = fct_rev(year)) +
@@ -260,7 +267,7 @@ showtext::showtext_auto()
 # We alreday did this above, but dont forget about it:
 # showtext::showtext_opts(dpi = 300)
 
-long_subtitle <- "In the mid-twentieth century, global life expectancy was shaped by post-war recovery, with variations stark across countries. As decades progressed, public health advances and socioeconomic growth painted a new picture of longevity. The data now reflect a world where life expectancy in 2007 often mirrors a vastly improved quality of life compared to 1952."
+long_subtitle <- "In the mid-twentieth century, global life expectancy was shaped by post-war recovery, with variations across countries. As decades progressed, public health advances and socioeconomic growth painted a new picture of longevity. The data now reflect a world where life expectancy in 2007 often mirrors an improved quality of life compared to 1952."
 
 p <- p +
   labs(
@@ -271,7 +278,7 @@ p <- p +
   theme(
     plot.title.position = "plot",
     plot.title = element_text(size = 15, face = "bold"),
-    plot.subtitle = ggtext::element_textbox_simple(size = 10, margin = margin(5, 0, 5, 0))
+    plot.subtitle = ggtext::element_textbox_simple(size = 10, margin = margin(0, 0, 5, 0))
   )
 
 p
@@ -319,7 +326,7 @@ p <- p +
     legend.position = "top",
     legend.box.just = "left",
     legend.justification = "left",
-    legend.margin = margin(5, 0, 0, -57, unit = "pt"),
+    legend.margin = margin(0, 0, 0, -57, unit = "pt"),
     legend.title = element_text(face = "bold"),
     legend.key.size = unit(0.4, "cm")
   )
@@ -365,6 +372,28 @@ p <- p +
 p
 ```
 
+### Remove Legend
+
+This comes down to personal preferences, but we could remove the legend entirely by instead coloring the subtitle in a way that clarifies what the colors stand for. Here this means that 1952 should be orange and 2007 blue. This is once more made possible via {ggtext} as it allows to use HTML rendering for text in ggplot. This means e.g. that that writing `A <b style='color:red;'> red </b> word` results in "A <b style='color:red;'> red </b> word". Let us therefore rewrite the subtitle accordingly:
+
+```{r}
+new_long_subtitle <- "In the mid-twentieth century, global life expectancy was shaped by post-war recovery, with variations across countries. As decades progressed, public health advances and socioeconomic growth painted a new picture of longevity. The data now reflect a world where life expectancy in <b style='color:#37A9E1;'>2007</b> often mirrors an improved quality of life compared to <b style='color:#F7AA59;'>1952</b>."
+
+p <- p +
+  labs(
+    title = "LIFE EXPECTANCY",
+    subtitle = new_long_subtitle
+  ) +
+  guides(fill = "none") 
+  # Be aware that we don't need to this here because we already
+  # did so earlier to have automatic line breaks, but without
+  # formatting the subtitle as a ggtext element, it would
+  # not understand the html commnand:
+  # theme(plot.subtitle = ggtext::element_textbox_simple()
+
+p
+```
+
 ### Dumbbell plot
 
 When it comes to visualizing changes or differences between two data points (like life expectancy across two different years in our case), dumbbell plots can offer a clearer and more direct comparison than grouped bar plots. While grouped bar plots efficiently display the individual values, dumbbell plots excel in highlighting the actual change or difference between these values. They connect the two data points with a line, making it visually immediate to see the extent of change. This is particularly beneficial in cases where the focus of the analysis is on the change itself rather than the absolute values. Moreover, dumbbell plots reduce clutter and can be easier to read when dealing with a large number of categories. By using different colors for the points and a subtle line to connect them, dumbbell plots provide a balanced emphasis on both the individual data points and their relative change, thereby offering a more nuanced view of the data. This makes them an excellent choice for our comparison of life expectancies over time.
@@ -372,17 +401,50 @@ When it comes to visualizing changes or differences between two data points (lik
 To create such a dumbbell plot, we need a transformed, wide version of our data (more on long/wide format [here](https://schmidtpaul.github.io/dsfair_quarto/ch/rbasics/tidyverse.html#longwide-format)):
 
 ```{r}
-dat_wide <- dat %>% 
+dat_lifeExp_wide <- dat %>% 
   select(country, year, lifeExp) %>% 
   pivot_wider(names_from = year, values_from = lifeExp, names_prefix = 'year_')
 
-dat_wide
+dat_lifeExp_wide
 ```
 
-Furthermore, we need most of what we did so far again with our ggplot object `p` again, but we do need to make some changes, which is why it makes sense to recreate `p2` from scratch. Here are the changes:
+Furthermore, we need most of what we did so far again with our ggplot object `p` again, but we do need to make some changes, which is why it makes sense to recreate `p2` from scratch. All the theme elements will stay the same for now, so let's wrap them in our own custom theme:
+
+```{r}
+theme_nature <- function(base_size = 12) {
+  theme_minimal(base_size = base_size) +
+    theme(
+      text = element_text(family = "kanit"),
+      plot.title.position = "plot",
+      plot.title = element_text(size = 15, face = "bold"),
+      plot.subtitle = ggtext::element_textbox_simple(size = 10, margin = margin(0, 0, 10, 0)),
+      axis.line.y = element_blank(),
+      axis.text.x = element_text(color = "#AAAAAA"),
+      axis.ticks.x = element_line(color = "#AAAAAA", linewidth = 0.4),
+      axis.ticks.length.x = unit(4, "pt"),
+      axis.line.x = element_line(color = "black", linewidth = 0.6),
+      legend.position = "top",
+      legend.box.just = "left",
+      legend.justification = "left",
+      legend.margin = margin(0, 0, 0,-57, unit = "pt"),
+      legend.title = element_text(face = "bold"),
+      legend.key.size = unit(0.4, "cm"),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.y = element_blank(),
+      panel.grid.major.x = element_line(
+        linetype = "dotted",
+        color = "#AAAAAA",
+        linewidth = 0.3
+      )
+    )
+}
+```
+
+Thus, when using our newly created `theme_nature()`, we can focus on the changes in the other parts of our ggplot we made even before adding any new geoms:
 
  * in the general `aes()` we use `color = fct_rev(year)` instead of `fill = fct_rev(year)`
  * accordingly, we also use `scale_color_manual()` instead of `scale_fill_manual()`
+ * Above, we turned off the legend in a later step via `guides(fill = "none")`. This time, we immediately set `guide = "none"` within `scale_color_manual()`.
  * we actually do want extra space beyond the limits for both axes so we remove the `expand =` statements
  * we no longer need bars created via `geom_col()` 
  * we no longer the labels created via `geom_text()`
@@ -390,16 +452,13 @@ Furthermore, we need most of what we did so far again with our ggplot object `p`
 Given this, we have a well-prepared ggplot in need of geoms:
 
 ```{r}
-p2 <- ggplot(data = dat) +
+p2_base <- ggplot(data = dat) +
   aes(x = lifeExp, y = country, color = fct_rev(year)) +
   scale_color_manual(
     name = "Year",
     limits = c("1952", "2007"), 
-    values = year_colors
-  ) +
-  labs(
-    title = "LIFE EXPECTANCY",
-    subtitle = long_subtitle
+    values = year_colors, 
+    guide = "none"
   ) +
   scale_y_discrete(
     name = NULL,
@@ -407,40 +466,21 @@ p2 <- ggplot(data = dat) +
   scale_x_continuous(
     name = NULL,
   ) +
-  guides(
-    fill = guide_legend(title.position = "left", nrow = 1)
+  labs(
+    title = "LIFE EXPECTANCY",
+    subtitle = new_long_subtitle
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    text = element_text(family = "kanit"),
-    plot.title.position = "plot",
-    plot.title = element_text(size = 15, face = "bold"),
-    plot.subtitle = ggtext::element_textbox_simple(size = 10, margin = margin(5, 0, 10, 0)),
-    axis.line.y = element_blank(),
-    axis.text.x = element_text(color = "#AAAAAA"),
-    axis.ticks.x = element_line(color = "#AAAAAA", linewidth = 0.4),
-    axis.ticks.length.x = unit(4, "pt"),
-    axis.line.x = element_line(color = "black", linewidth = 0.6),
-    legend.position = "top",
-    legend.box.just = "left",
-    legend.justification = "left",
-    legend.margin = margin(5, 0, 0, -57, unit = "pt"),
-    legend.title = element_text(face = "bold"),
-    legend.key.size = unit(0.4, "cm"),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.y = element_blank(),
-    panel.grid.major.x = element_line(linetype = "dotted", color = "#AAAAAA", linewidth = 0.3)
-  )
+  theme_nature()
 
-p2
+p2_base
 ```
 
-We only need two geoms to create a dumbbell plot here: `geom_segment()` draws a straight line between points (`x`, `y`) and (`xend`, `yend`), which works nicely with the `dat_wide` created above. Note that the `color = "#AAAAAA"` overrides the `color = fct_rev(year)` from the general `aes()` that would otherwise apply. The points are automatically created and colored via `geom_point()` based on `dat` and the general `aes()`. 
+We only need two geoms to create a dumbbell plot here: `geom_segment()` draws a straight line between points (`x`, `y`) and (`xend`, `yend`), which works nicely with the `dat_lifeExp_wide` created above. Note that the `color = "#AAAAAA"` overrides the `color = fct_rev(year)` from the general `aes()` that would otherwise apply. The points are automatically created and colored via `geom_point()` based on `dat` and the general `aes()`. 
 
 ```{r}
-p2 <- p2 +
+p2 <- p2_base +
   geom_segment(
-    data = dat_wide,
+    data = dat_lifeExp_wide,
     aes(x = year_1952, xend = year_2007, y = country, yend = country),
     color = "#AAAAAA",
     linewidth = 1
@@ -452,8 +492,12 @@ p2
 
 ### Labels again
 
+Once again we can decide additionally have data points labeled with their values. We can easily add the rounded life expectancy above each point by basically using the same general aesthetics as `geom_point()` but vertically justifying a bit upwards.
+
+Yet, even more informative is the actual difference between 2007 and 1952. For that, we can use `dat_lifeExp_wide` again where we already how one column per year and can subtract them into a new column `diff_num`. For easier readability we then format that result by first rounding it and then making it into a string `diff_chr` that always displays "+" or "-" in front of the respective number. I want to position this label on the right side of each dumbbell and could easily do so if the life expectancy were always higher for 2007 but this is not the case for Zimbabwe. Thus, I am also creating a helper column `max_x` which is simply the maximum life expectancy of the two years or in other words the right side of the dumbbell. We now have everything we need to use a second `geom_text` where we use `dat = dat_lifeExp_wide` instead of the dataset provided in `ggplot(data = dat)` and set the aesthetics as `aes(x = max_x, label = diff_chr)`. So far, our labels would be on top of the point of the right side of the dumbbell. Thus, we add `position = position_nudge(x = 1)` to nudge the position for the label one year to the right and additionally use `hjust = 0` so that the label is not centered left-aligned to that nudged position.
+
 ```{r}
-dat_wide <- dat_wide %>% 
+dat_lifeExp_wide <- dat_lifeExp_wide %>% 
   mutate(
     max_x = pmax(year_2007, year_1952),
     diff_num = year_2007 - year_1952,
@@ -468,32 +512,242 @@ p2 <- p2 +
     family = "kanit"
   ) +
   geom_text(
-    data = dat_wide,
-    inherit.aes = FALSE,
-    mapping = aes(y = country, x = max_x, label = diff_chr),
+    data = dat_lifeExp_wide,
+    mapping = aes(x = max_x, label = diff_chr),
     size = 2.5,
     hjust = 0,
-    color = "#AAAAAA",
     position = position_nudge(x = 1),
+    color = "#AAAAAA",
     family = "kanit"
   )
 
 p2
 ```
 
-TODO
-
- - discuss advantage
- - remove legend and have colored text in subtitle instead
- 
-
 # Part 2: Multiple plots
 
-TODO
+Let us take a step back and look at our data again to realize that we also have information about population and GDP per capita for each country in each year:
 
-## Choosing colors
+```{r}
+dat
+```
 
-TODO 
+Thus, we could simply create the same ggplot three times: once for each variable. While this is certainly an option and call for packages such as [{patchwork}](https://patchwork.data-imaginist.com/) or [{cowplot}](https://wilkelab.org/cowplot/index.html), we can also achieve our goal via facets within the same ggplot.
 
- - copy colors from nature plot
+## Data prep
+
+To do that, we need to restructure our data so that all values are in the same column:
+
+```{r}
+dat_long <- dat %>%
+  pivot_longer(
+    cols = c(lifeExp, pop, gdpPercap),
+    names_to = "statistic",
+    values_to = "value"
+  )
+
+dat_long
+```
+
+Moreover, we need a `dat_all_wide` instead of the `dat_lifeExp_wide` from above:
+
+```{r}
+dat_all_wide <- dat_long %>% 
+  pivot_wider(names_from = year, values_from = value, names_prefix = 'year_') %>% 
+    mutate(
+    max_x = pmax(year_2007, year_1952),
+    diff_num = year_2007 - year_1952,
+    diff_chr = sprintf("%+d", round(diff_num))
+  )
+```
+
+Finally, besides changing title and subtitle, the most important change is to add `facet_wrap(facets = ~ statistic, scales = "free_x")` so that we get one plot per value in the `statistic` column while their x-axes are allowed to have different scales:
+
+```{r}
+another_long_subtitle <- paste0("In <b style='color:", year_colors[["2007"]], ";'>2007</b>, compared to <b style='color:", year_colors[["1952"]],";'>1952</b>, life expectancy, Gross Domestic Product (GDP) per capita, and population data collectively reflect significant advancements in health, economic prosperity, and demographic trends, illustrating an overall enhanced quality of life.")
+
+ggplot(data = dat_long) +
+  aes(x = value, y = country, color = fct_rev(year)) +
+  facet_wrap(facets = ~ statistic, scales = "free_x") +
+  scale_color_manual(
+    name = "Year",
+    limits = c("1952", "2007"), 
+    values = year_colors,
+    guide = "none"
+  ) +
+  labs(
+    title = "GDP, LIFE EXPECTANCY & POPULATION",
+    subtitle = another_long_subtitle
+  ) +
+  scale_y_discrete(
+    name = NULL,
+  ) + 
+  scale_x_continuous(
+    name = NULL,
+  ) +
+  theme_nature() +
+  geom_segment(
+    data = dat_all_wide,
+    aes(x = year_1952, xend = year_2007, y = country, yend = country),
+    color = "#AAAAAA",
+    linewidth = 1
+  ) +
+  geom_point(size = 3) +
+  geom_text(
+    mapping = aes(label = round(value)),
+    size = 2.5,
+    vjust = -1,
+    family = "kanit"
+  ) +
+  geom_text(
+    data = dat_all_wide,
+    mapping = aes(x = max_x, label = diff_chr),
+    size = 2.5,
+    hjust = 0,
+    position = position_nudge(x = 1),
+    color = "#AAAAAA",
+    family = "kanit"
+  )
+```
+
+So technically this worked, but it obviously needs some tweaking. First, the facets should have nicer labels than just the variable names. Moreover, while it is helpful that the x-axes of the different facets were allowed to have different scales/limits, the vast difference between magnitude of the three variables leads to problematic labels for both the axes and inside the plot. As a result, simply rounding the numbers is still appropriate for life expectancy, but not for the other two. We therefore create a new column `value_lab` in which labels for each point are defined depending on what statistic it is. A convenient way to create such formatted numbers is the `scales::number()` function. Besides `value_lab` in `dat_long`, we also recreate `diff_chr` in `dat_all_wide` this way, additionally adding the +/-. Finally note that also the method of positioning the label on the right side of the dumbbell no longer works. One way of fixing it is also creating a new column `x_pos_lab` which adds a certain value to `max_x` depending on the statistic.
+
+```{r}
+dat_long <- dat_long %>% 
+  mutate(value_lab = case_when(
+    statistic == "lifeExp"   ~ number(value, accuracy = 1),
+    statistic == "pop"       ~ number(value, accuracy = 1,   scale = 1/1000000, suffix = "m"),
+    statistic == "gdpPercap" ~ number(value, accuracy = 0.1, scale = 1/1000,    suffix = "k")
+  ))
+
+dat_all_wide <- dat_all_wide %>%
+  mutate(
+    diff_chr = case_when(
+      statistic == "lifeExp"   ~ number(
+        diff_num,
+        style_positive = "plus",
+        style_negative = "minus",
+        accuracy = 1
+      ),
+      statistic == "pop"       ~ number(
+        diff_num,
+        style_positive = "plus",
+        style_negative = "minus",
+        accuracy = 1,
+        scale = 1 / 1000000,
+        suffix = "m"
+      ),
+      statistic == "gdpPercap" ~ number(
+        diff_num,
+        style_positive = "plus",
+        style_negative = "minus",
+        accuracy = 0.1,
+        scale = 1 / 1000,
+        suffix = "k"
+      )
+    ),
+    x_pos_lab = case_when(
+      statistic == "lifeExp"   ~ max_x + 3,
+      statistic == "pop"       ~ max_x + 10000000,
+      statistic == "gdpPercap" ~ max_x + 3000
+    )
+  )
+```
+
+We can then apply these new labels to our faceted ggplot. We also provide labels per facet via `labeller = labeller(statistic = ...)`. Finally not the even though we shortened the labels, the will still overlap in some cases where the points are too close to each other. One solution is to have the 1952-label below and the 2007-label above the point which can be achived by moving the `vjust` inside the `aes()` and having it depend on the year via `vjust = if_else(year == "1952", 2, -1)`:
+
+```{r}
+facet_labels <- c(lifeExp = "Life Expectancy [years]", pop = "Population", gdpPercap = "GDP per Capita [$]")
+
+p3 <- ggplot(data = dat_long) +
+  aes(x = value, y = country, color = fct_rev(year)) +
+  facet_wrap(
+    facets = ~ statistic,
+    scales = "free_x",
+    labeller = labeller(statistic = facet_labels)
+  ) +
+  scale_color_manual(
+    name = "Year",
+    limits = c("1952", "2007"), 
+    values = year_colors,
+    guide = "none"
+  ) +
+  scale_y_discrete(
+    name = NULL,
+  ) + 
+  scale_x_continuous(
+    name = NULL,
+  ) +
+  labs(
+    title = "GDP, LIFE EXPECTANCY & POPULATION",
+    subtitle = another_long_subtitle
+  ) +
+  theme_nature() +
+  theme(
+    panel.spacing = unit(1, "lines"),
+    strip.background = element_rect(fill = NA, color = "black")
+  ) +
+  geom_segment(
+    data = dat_all_wide,
+    aes(x = year_1952, xend = year_2007, y = country, yend = country),
+    color = "#AAAAAA",
+    linewidth = 1
+  ) +
+  geom_point(size = 3) +
+  geom_text(
+    mapping = aes(label = value_lab, vjust = if_else(year == "1952", 2, -1)),
+    size = 2.5,
+    family = "kanit"
+  ) +
+  geom_text(
+    data = dat_all_wide,
+    mapping = aes(x = x_pos_lab, label = diff_chr),
+    size = 2.5,
+    hjust = 0,
+    color = "#AAAAAA",
+    family = "kanit"
+  )
+
+p3
+```
+
+However, the axes are still not optimal for two reasons: The axis labels do not look good except for Life Expectancy and the labels inside the plots are sometimes cut off due to the axis limits. Adjusting axes per facet is actually not possible/straightforward via {ggplot2} so we need load [{ggh4x}](https://teunbrand.github.io/ggh4x/index.html) to make use of `facetted_pos_scales`. Note that we can use `labels = scales::number_format()` in basically the same way as we used `scales::number()` above. Moreover, we choose good combinations of `limits` and `expand` to make sure no labels are cut off and finally pick `breaks` via the convenient `scales::breaks_width()` function:
+
+```{r}
+p3 <- p3 + facetted_pos_scales(
+  x = list(
+    statistic == "lifeExp" ~ scale_x_continuous(
+      limits = c(35, 90),
+      breaks = breaks_width(20),
+      labels = number_format(accuracy = 1)
+    ),
+    statistic == "pop" ~ scale_x_continuous(
+      limits = c(0, 150000000),
+      expand = expansion(mult = c(0.05, 0.2)),
+      breaks = breaks_width(50000000),
+      labels = number_format(
+        accuracy = 1,
+        scale = 1 / 1000000,
+        suffix = "m"
+      )
+    ),
+    statistic == "gdpPercap" ~ scale_x_continuous(
+      limits = c(0, 50000),
+      expand = expansion(mult = c(0.075, 0.075)),
+      breaks = breaks_width(25000),
+      labels = number_format(
+        accuracy = 1,
+        scale = 1 / 1000,
+        suffix = "k"
+      )
+    )
+  )
+)
+
+p3
+```
+
+TODO:
+
+ - Choosing colors
  - use viridis colors instead
