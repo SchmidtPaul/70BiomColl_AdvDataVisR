@@ -1,8 +1,13 @@
-<!-- set all hyperlinks to open in a new window (i.e. target="_blank" ) -->
+<!-- set all external hyperlinks to open in a new window (i.e. target="_blank" ) -->
 <script>
   document.addEventListener('DOMContentLoaded', (event) => {
+    const currentHostname = window.location.hostname;
+
     document.querySelectorAll('a').forEach(function(link) {
-      link.setAttribute('target', '_blank');
+      // Check if the link is external
+      if (link.hostname !== currentHostname) {
+        link.setAttribute('target', '_blank');
+      }
     });
   });
 </script>

@@ -21,35 +21,35 @@ knitr:
     comment: "#>"
 ---
 
-```{r, echo=FALSE}
+```{r}
+#| echo: false
 knitr::opts_chunk$set(class.output = "custom-output")
 ```
-
 
 This is the supporting material for the tutorial **Advanced data visualization in R** which is part of the 70th Biometrical Colloquium 2024 in Luebeck and takes place 28.02.2024 09:00-12:00. Here is the tutorial description as displayed on the [website's conference program](https://www.biometrische-gesellschaft.de/en/events/biometric-colloquia/70th-biometrical-colloquium-2024-in-luebeck/conference-program.html):
 
 > **Advanced data visualization in R: (Re)producing professional plots with ggplot2 and the tidyverse**
 >
 > Lecturer: Paul Schmidt (BioMath GmbH, Hamburg)
-> 
+>
 > Learning objectives:
-> 
-> - Deep dive into ggplot2: Understand the intricacies of ggplot2 for top-tier data visualization
-> - Data manipulation with tidyverse: Utilize packages like dplyr, tidyr, and forcats to shape data optimally for creating graphs
-> - Aesthetic fine-tuning: Master the skills of axis formatting, theme detailing, and color selection
-> - Reproducing Exercise: Recreate published plots to understand the application of ggplot2 techniques in real-world scenarios
-> - Exporting excellence: Learn best practices for exporting plots in publication-ready formats
-> 
+>
+> -   Deep dive into ggplot2: Understand the intricacies of ggplot2 for top-tier data visualization
+> -   Data manipulation with tidyverse: Utilize packages like dplyr, tidyr, and forcats to shape data optimally for creating graphs
+> -   Aesthetic fine-tuning: Master the skills of axis formatting, theme detailing, and color selection
+> -   Reproducing Exercise: Recreate published plots to understand the application of ggplot2 techniques in real-world scenarios
+> -   Exporting excellence: Learn best practices for exporting plots in publication-ready formats
+>
 > Target group:
-> 
-> - Anyone wanting to produce or present high-quality plots. Conveying complex data insights through refined visualizations is a relevant part of statistical analysis
-> 
+>
+> -   Anyone wanting to produce or present high-quality plots. Conveying complex data insights through refined visualizations is a relevant part of statistical analysis
+>
 > Prerequisites:
-> 
-> - Basic understanding of R programming is required
-> - Basic knowledge of ggplot2 and the tidyverse is beneficial, but not required
-> - R-packages: tidyverse, cowplot, ggrepel, ggtext, viridis
-> 
+>
+> -   Basic understanding of R programming is required
+> -   Basic knowledge of ggplot2 and the tidyverse is beneficial, but not required
+> -   R-packages: tidyverse, cowplot, ggrepel, ggtext, viridis
+>
 > Format: Hybrid
 
 # Part 0: Setup
@@ -60,7 +60,9 @@ The decision on which plots to create in this workshop was inspired by [this blo
 
 You will need to install and load the following packages
 
-```{r, eval=FALSE}
+```{r}
+#| eval: false
+install.packages("camcorder")
 # install.packages("cowplot")
 install.packages("gapminder")
 install.packages("ggh4x")
@@ -73,6 +75,7 @@ install.packages("tidyverse")
 ```
 
 ```{r}
+library(camcorder)
 # library(cowplot)
 library(gapminder)
 library(ggh4x)
@@ -86,9 +89,9 @@ library(tidyverse)
 showtext::showtext_opts(dpi = 300)
 ```
 
-```{r, echo=FALSE}
-# this does not run when rendering the qmd file
-if(interactive()) {
+```{r}
+#| echo: false
+if(interactive()) { # this does not run when rendering the qmd fileq
   camcorder::gg_record(
     dir = file.path(tempdir(), "recording100"), # where to save the recording
     device = "png",
@@ -100,9 +103,84 @@ if(interactive()) {
 }
 ```
 
-# Part 1: A single plot
+# Part 1: Export
 
-Let us first create a single plot to compare the life expectancy between 1952 and 2007 for seven countries, respectively. 
+This might be a bit unexpected, but I would argue that the very first thing we should talk about is exporting your ggplots. A major reason for this is the fact that by default you would create your ggplots by looking at them in the "Plots" preview window in RStudio. While this is not a problem *per se*, it becomes problematic once you realize the scale/size of your ggplot automatically adjusts to the size of your preview window. This is especially annoying regarding font sizes. Try it out: Create the following ggplot and then play around with width and height of your "Plots" panel in RStudio:
+
+```{r}
+myplot <- ggplot(data = mtcars) +
+  aes(y = mpg, x = hp) +
+  geom_point()
+```
+
+You may get results like this:
+
+::: columns
+::: {.column width="49%"}
+```{r}
+#| fig-width: 3
+#| fig-height: 1
+myplot
+```
+:::
+
+::: {.column width="2%"}
+:::
+
+::: {.column width="49%"}
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+myplot
+```
+:::
+:::
+
+As far as I know, there are two ways of properly dealing with this.
+
+## Export and open file
+
+To avoid the issue, you may simply never look at the preview of your ggplot in RStudio and instead always export your plot to then look at the exported file. Exporting a ggplot is flexible and convenient. You can choose a device function (e.g. [png](https://www.rdocumentation.org/packages/grDevices/versions/3.4.1/topics/png)) or "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf" (windows only). Furthermore, you can set width and height in a unit of your choice and depending on your file type even choose the dpi and more.
+
+```{r}
+#| eval: false
+ggsave(
+  filename = "myfile.png",
+  plot = myplot,
+  width = 6, 
+  height = 4,
+  units = "in",
+  dpi = 300
+) 
+```
+
+You don't even need to manually open the file after creating it if you instead run this:
+
+```{r}
+#| eval: false
+system('open "myfile.png"')
+```
+
+## Use {camcorder}
+
+There is a package called [`{camcorder}`](https://thebioengineer.github.io/camcorder/) which advertises its "eventual goal of creating a GIF showing all the plots saved sequentially during the design process" like in [these examples](https://thebioengineer.github.io/camcorder/#goal-end-product). However, I am [not the only one](https://albert-rapp.de/posts/ggplot2-tips/12_a_few_gg_packages/12_a_few_gg_packages.html#camcorder) using camcorder for its feature of fixing the canvas size. In other words: It shows your ggplot in the RStudio panel fixed to your chosen scale. Thus, simply run something like this at the beginning of your session so that all ggplots shown afterwards are exactly 6x4 inches wide with dpi 300:
+
+```{r}
+#| eval: false
+  camcorder::gg_record(
+    device = "png",
+    width = 6, 
+    height = 4,
+    units = "in", 
+    dpi = 300
+  )
+```
+
+Note that it actually does not show up in RStudio's "Plots" but in its "Viewer" panel. Furthermore, note that it actually saves the intermediate plots somewhere, but defaults to a temporary directory for that.
+
+# Part 2: A single plot
+
+Let us first create a single plot to compare the life expectancy between 1952 and 2007 for seven countries, respectively.
 
 ## data prep
 
@@ -195,7 +273,7 @@ ggplot(data = dat) +
   geom_col(position = position_dodge())
 ```
 
-Next, we address the order of years in the plot and the legend. As you can see in the previous plots, once more the first factor level (1952) is on the bottom, while the second level (2007) is on top. Thus, we could use one of the approaches shown for `country` to change that. More precisely, let's take the approach of *Alternative 1* and use `fct_rev()` inside the `aes()`. 
+Next, we address the order of years in the plot and the legend. As you can see in the previous plots, once more the first factor level (1952) is on the bottom, while the second level (2007) is on top. Thus, we could use one of the approaches shown for `country` to change that. More precisely, let's take the approach of *Alternative 1* and use `fct_rev()` inside the `aes()`.
 
 Note however, that while this changes the order of the years in the plot, it does not affect their order in the legend. To address that, we can use the `limits =` argument in `scale_fill_manual()` (which corresponds to *Alternative 2* above):
 
@@ -219,9 +297,9 @@ ggplot(data = dat) +
 
 ## reproducing a theme
 
-Now that we've got the basics correct, the next thing I would want to change is things like the theme, i.e. the non-data components of the plot: titles, labels, fonts, background, gridlines, and legends. 
+Now that we've got the basics correct, the next thing I would want to change is things like the theme, i.e. the non-data components of the plot: titles, labels, fonts, background, gridlines, and legends.
 
-Using `theme()` allows us to format our plot in any way we want. Instead of picking things based on what feels good, let us here try to recreate the layout of a plot published in [*Nature*](https://doi.org/10.1038/d41586-019-03305-w) in '150 years of Nature: a data graphic charts our evolution' by Richard Monastersky & Richard Van Noorden (2019). [URL to the  plot](https://media.nature.com/lw767/magazine-assets/d41586-019-03305-w/d41586-019-03305-w_17345518.png).
+Using `theme()` allows us to format our plot in any way we want. Instead of picking things based on what feels good, let us here try to recreate the layout of a plot published in [*Nature*](https://doi.org/10.1038/d41586-019-03305-w) in '150 years of Nature: a data graphic charts our evolution' by Richard Monastersky & Richard Van Noorden (2019). [URL to the plot](https://media.nature.com/lw767/magazine-assets/d41586-019-03305-w/d41586-019-03305-w_17345518.png).
 
 ![](https://media.nature.com/lw767/magazine-assets/d41586-019-03305-w/d41586-019-03305-w_17345518.png)
 
@@ -248,11 +326,11 @@ p
 
 ### font
 
-To further replicate the aesthetics of the Nature plot, we introduce a custom font named *Kanit*. This font, available through [Google Fonts](https://fonts.google.com/), has been chosen for its stylistic resemblance to the one used in the Nature publication. 
+To further replicate the aesthetics of the Nature plot, we introduce a custom font named *Kanit*. This font, available through [Google Fonts](https://fonts.google.com/), has been chosen for its stylistic resemblance to the one used in the Nature publication.
 
 The process begins by fetching the font from Google Fonts and making it available for use in our R session via `sysfonts::font_add_google("Kanit", "kanit")`. Next, `showtext::showtext_auto()` activates the use of custom fonts in plots. It's important to also run `showtext::showtext_opts(dpi = 300)` to avoid getting unexpected results. This is because `{showtext}` uses a default of 72 dpi, while e.g. exporting plots via `ggsave()` defaults to `dpi = 300`. Furthermore, you may also want the dpi to be 300 (or some other number) when rendering plots within your RMarkdown via `knitr::opts_chunk$set(dpi = 300)` or quarto document via `fig-dpi: 300`.
 
-We add a title and subtitle via `labs()` and then apply the font to all text elements via `text = element_text(family = "kanit")`. For some reason, the default position of title and subtitle in a ggplot is left-aligned with the y-axis - to instead left-align it with the left side of the entire plot, we apply `plot.title.position = "plot"`. Making the title a bit bigger and bold is straightforward. However, having a subtitle (or other text elements) that has automatic line breaks when the string is too long actually requires `{ggtext}` and more specifically a `ggtext::element_textbox_simple()` instead of the default `ggplot2::element_text()`. 
+We add a title and subtitle via `labs()` and then apply the font to all text elements via `text = element_text(family = "kanit")`. For some reason, the default position of title and subtitle in a ggplot is left-aligned with the y-axis - to instead left-align it with the left side of the entire plot, we apply `plot.title.position = "plot"`. Making the title a bit bigger and bold is straightforward. However, having a subtitle (or other text elements) that has automatic line breaks when the string is too long actually requires `{ggtext}` and more specifically a `ggtext::element_textbox_simple()` instead of the default `ggplot2::element_text()`.
 
 ```{r}
 sysfonts::font_add_google("Kanit", "kanit")
@@ -435,13 +513,13 @@ theme_nature <- function(base_size = 12) {
 
 Thus, when using our newly created `theme_nature()`, we can focus on the changes in the other parts of our ggplot we made even before adding any new geoms:
 
- * in the general `aes()` we use `color = fct_rev(year)` instead of `fill = fct_rev(year)`
- * accordingly, we also use `scale_color_manual()` instead of `scale_fill_manual()`
- * Above, we turned off the legend in a later step via `guides(fill = "none")`. This time, we immediately set `guide = "none"` within `scale_color_manual()`.
- * we actually do want extra space beyond the limits for both axes so we remove the `expand =` statements
- * we no longer need bars created via `geom_col()` 
- * we no longer the labels created via `geom_text()`
- 
+-   in the general `aes()` we use `color = fct_rev(year)` instead of `fill = fct_rev(year)`
+-   accordingly, we also use `scale_color_manual()` instead of `scale_fill_manual()`
+-   Above, we turned off the legend in a later step via `guides(fill = "none")`. This time, we immediately set `guide = "none"` within `scale_color_manual()`.
+-   we actually do want extra space beyond the limits for both axes so we remove the `expand =` statements
+-   we no longer need bars created via `geom_col()`
+-   we no longer the labels created via `geom_text()`
+
 Given this, we have a well-prepared ggplot in need of geoms:
 
 ```{r}
@@ -468,7 +546,7 @@ p2_base <- ggplot(data = dat) +
 p2_base
 ```
 
-We only need two geoms to create a dumbbell plot here: [`geom_segment()`](https://ggplot2.tidyverse.org/reference/geom_segment.html) draws a straight line between points (`x`, `y`) and (`xend`, `yend`), which works nicely with the `dat_lifeExp_wide` created above. Note that the `color = "#AAAAAA"` overrides the `color = fct_rev(year)` from the general `aes()` that would otherwise apply. The points are automatically created and colored via `geom_point()` based on `dat` and the general `aes()`. 
+We only need two geoms to create a dumbbell plot here: [`geom_segment()`](https://ggplot2.tidyverse.org/reference/geom_segment.html) draws a straight line between points (`x`, `y`) and (`xend`, `yend`), which works nicely with the `dat_lifeExp_wide` created above. Note that the `color = "#AAAAAA"` overrides the `color = fct_rev(year)` from the general `aes()` that would otherwise apply. The points are automatically created and colored via `geom_point()` based on `dat` and the general `aes()`.
 
 ```{r}
 p2 <- p2_base +
@@ -517,7 +595,7 @@ p2 <- p2 +
 p2
 ```
 
-# Part 2: Multiple plots
+# Part 3: Multiple plots
 
 Let us take a step back and look at our data again to realize that we also have information about population and GDP per capita for each country in each year:
 
@@ -748,9 +826,9 @@ p3
 
 # TODO
 
- - After first plot: Talk about exporting and then about looking at your plot not in the RStudio preview window. Maybe even introduce {camcorder}
- - Choosing colors / use viridis colors instead
- - Have full code to get final each plot in a single folded chunk
- - Packages in tutorial description but not in tutorial yet: cowplot, ggrepel, viridis
- - BioMath Logo/Link on Website
- - BioMath in Citation
+-   After first plot: Talk about exporting and then about looking at your plot not in the RStudio preview window. Maybe even introduce {camcorder}
+-   Choosing colors / use viridis colors instead
+-   Have full code to get final each plot in a single folded chunk
+-   Packages in tutorial description but not in tutorial yet: cowplot, ggrepel, viridis
+-   BioMath Logo/Link on Website
+-   BioMath in Citation
