@@ -1,13 +1,15 @@
-<!-- set all external hyperlinks to open in a new window (i.e. target="_blank" ) -->
-<script>
-  document.addEventListener('DOMContentLoaded', (event) => {
-    const currentHostname = window.location.hostname;
+<!-- Netlify Identity Widget -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
-    document.querySelectorAll('a').forEach(function(link) {
-      // Check if the link is external
-      if (link.hostname !== currentHostname) {
-        link.setAttribute('target', '_blank');
+<!-- Authentication and Protected Routes Logic -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.open(); // Open the login modal if no user is logged in
       }
     });
-  });
+  }
+});
 </script>
