@@ -1,0 +1,28 @@
+---
+title: "Login Page"
+format:
+  html:
+    include-before-body: header.html
+citation: false
+---
+  
+# Log In
+
+Please log in to access the website.
+
+<div id="netlify-login-button" style="margin-top: 20px;">
+  <button onclick="netlifyIdentity.open();">Log In</button>
+</div>
+
+<!-- Placeholder for showing logged-in user info -->
+<div id="logged-in-info" style="margin-top: 20px;"></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
+      document.getElementById('logged-in-info').innerText = 'You are logged in.';
+    } else {
+      document.getElementById('logged-in-info').innerText = 'You are not logged in.';
+    }
+  });
+</script>
