@@ -26,3 +26,23 @@ Please log in to access the website.
     }
   });
 </script>
+
+<button onclick="console.log(window.netlifyIdentity.currentUser())">Check Current User</button>
+
+<button onclick="checkCurrentUser()">Check Current User</button>
+
+<script>
+  function checkCurrentUser() {
+    if (window.netlifyIdentity) {
+      const user = window.netlifyIdentity.currentUser();
+      if (user) {
+        console.log('Current user:', user);
+      } else {
+        console.log('No user is currently logged in.');
+      }
+    } else {
+      console.log('Netlify Identity widget not initialized.');
+    }
+  }
+</script>
+
