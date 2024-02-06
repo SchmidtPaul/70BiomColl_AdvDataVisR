@@ -1,13 +1,21 @@
-<!-- set all external hyperlinks to open in a new window (i.e. target="_blank" ) -->
+<!-- Netlify Identity Widget -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', (event) => {
-    const currentHostname = window.location.hostname;
-
-    document.querySelectorAll('a').forEach(function(link) {
-      // Check if the link is external
-      if (link.hostname !== currentHostname) {
-        link.setAttribute('target', '_blank');
+  if (!window.netlifyIdentity.currentUser()) {
+    window.netlifyIdentity.on('init', user => {
+      if (!user) {
+        window.netlifyIdentity.open('login'); // Open the login modal if no user is logged in
       }
     });
+  }
+
+  window.netlifyIdentity.on('login', user => {
+    console.log('login', user);
+    // possibly redirect the user or update UI
+  });
+
+  window.netlifyIdentity.on('logout', () => {
+    console.log('Logged out');
+    window.location.reload(); // Reload the page on logout
   });
 </script>
