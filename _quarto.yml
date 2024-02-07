@@ -7,8 +7,6 @@ website:
   navbar:
     title: "Tutorial: Advanced data visualization in R"
     right:
-      - text: login
-        href: login.qmd
       - text: Contact
         href: https://schmidtpaul.github.io/
       - icon: github
