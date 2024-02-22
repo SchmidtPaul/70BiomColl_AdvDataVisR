@@ -13,8 +13,16 @@ website:
         href: https://github.com/SchmidtPaul/70BiomColl_AdvDataVisR
         aria-label: GitHub
   page-footer: 
-    right:
-      - text: '<p>All content licensed under a <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial 4.0 International License</a>.</p>'
+    left: |
+      Inhalt {{< fa brands creative-commons >}} 
+      2024 von [Dr. Paul Schmidt](https://schmidtpaul.github.io/), 
+      [BioMath GmbH](www.biomath.de)<br>
+      Alle Inhalte sind lizenziert als {{< fa brands creative-commons >}}
+      {{< fa brands creative-commons-by >}} {{< fa brands creative-commons-nc >}}
+      [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
+    right: |
+      Erstellt mit [{{< fa brands r-project >}}](https://www.r-project.org/) 
+      und [Quarto](https://quarto.org/).
     border: true
     background: "#00923f"
   site-url: https://github.com/SchmidtPaul/70BiomColl_AdvDataVisR
@@ -22,7 +30,7 @@ website:
 format:
   html:
     anchor-sections: true
-    css: styles.css
+    css: include/styles.css
     code-fold: false
     code-summary: "Click to show/hide code"
     code-overflow: scroll
@@ -31,7 +39,7 @@ format:
     code-tools: true
     citations-hover: true
     footnotes-hover: true
-    theme: theme.scss
+    theme: include/theme.scss
     toc: true
   pdf:
     colorlinks: true
