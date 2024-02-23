@@ -69,4 +69,5 @@ execute:
   freeze: auto
   
 citation: 
-  publisher: "70th Biometrical Colloquium 2024 in Lübeck"
+  publisher: "BioMath GmbH"
+  note: "Presented at the 70th Biometrical Colloquium 2024 in Lübeck"
